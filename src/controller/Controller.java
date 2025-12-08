@@ -8,18 +8,22 @@ import storage.Storage;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Controller {
-    public static Heat createHeat(int nummer, LocalTime tid, boolean finale, Kapsejlads kapsejlads) {
-        if (kapsejlads == null) {
-            throw new IllegalArgumentException("kapsejlads must not be null");
-        }
-        Storage.addKapsejlads(kapsejlads);
-        return kapsejlads.createHeat(nummer, tid, finale);
+
+    // factory / query wrappers to hide Storage from GUI
+    public static List<Kapsejlads> getKapsejladser() {
+        return Storage.getKapsejlads();
     }
 
+    public static List<Hold> getHolds() {
+        return Storage.getHolds();
+    }
+
+    // create or return existing kapsejlads
     public static Kapsejlads createKapsejlads(String titel, LocalDate dato, int tilskuere) {
-        //could make a fail safe to see if the kapsejlads is already made by checking name;
         for (Kapsejlads k : Storage.getKapsejlads()) {
             if (k.getTitel().equals(titel) && k.getDato().equals(dato)) {
                 return k;
@@ -30,19 +34,32 @@ public class Controller {
         return kapsejlads;
     }
 
-    public static Resultat createResultat(int bane, int sekunder, Heat heat) {
+    // create heat through controller to keep association consistent
+    public static Heat createHeat(Kapsejlads kapsejlads, int nummer, LocalTime tid, boolean finale) {
+        if (kapsejlads == null) {
+            throw new IllegalArgumentException("Kapsejlads must not be null");
+        }
+        return kapsejlads.createHeat(nummer, tid, finale);
+    }
+
+    // validated creation of a resultat (preferred)
+    public static Resultat createResultatValidated(Heat heat, Hold hold, int bane, int sekunder) {
+        if (heat == null) {
+            throw new IllegalArgumentException("Heat must not be null");
+        }
+        if (hold == null) {
+            throw new IllegalArgumentException("Hold must not be null");
+        }
+        // delegate validation to domain (Heat.createResultatMedValidering)
+        return heat.createResultatMedValidering(hold, bane, sekunder);
+    }
+
+    // legacy/basic creation (no hold)
+    public static Resultat createResultat(Heat heat, int bane, int sekunder) {
         if (heat == null) {
             throw new IllegalArgumentException("Heat must not be null");
         }
         return heat.createResultat(bane, sekunder);
-    }
-
-    public static Resultat createResultat(int bane, int sekunder, Heat heat, Hold hold) {
-        Resultat resultat = createResultat(bane, sekunder, heat);
-        if (hold != null) {
-            hold.addResultat(resultat);
-        }
-        return resultat;
     }
 
     public static Hold createHold(String navn, String institution) {
@@ -60,15 +77,13 @@ public class Controller {
         var kapsejladser = Storage.getKapsejlads();
         int totalTilskuere = 0;
         int count = 0;
-        for (Kapsejlads kapsejlad : Storage.getKapsejlads()) {
+        for (Kapsejlads kapsejlad : kapsejladser) {
             if (kapsejlad.getTilskuere() > 0) {
                 totalTilskuere += kapsejlad.getTilskuere();
                 count++;
             }
         }
-        if (count == 0){
-            return 0;
-        }
+        if (count == 0) return 0;
         return totalTilskuere / count;
     }
 }

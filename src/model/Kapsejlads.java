@@ -107,4 +107,11 @@ public class Kapsejlads {
         Hold[] resultat = new Hold[finalister.size()];
         return finalister.toArray(resultat);
     }
+    public ArrayList<Heat> getHeats(){
+        return heats;
+    }
+    @Override
+    public String toString(){
+        return titel + " (" + dato +")";
+    }
 }

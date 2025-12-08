@@ -32,4 +32,8 @@ public class Hold {
             resultat.setHold(null);
         }
     }
+    @Override
+    public String toString(){
+        return navn + " (" + institution + ")";
+    }
 }

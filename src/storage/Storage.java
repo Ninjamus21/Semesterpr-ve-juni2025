@@ -26,8 +26,9 @@ public class Storage {
         addKapsejlads(kapsejlads4);
         addKapsejlads(kapsejlads5);
 
-        Heat heatfirst2025 = new Heat(1, LocalTime.of(14,30),false,kapsejlads4);
-        Heat heatSecond2025 = new Heat(2, LocalTime.of(15,30),false,kapsejlads4);
+        Heat heatfirst2025 = kapsejlads4.createHeat(1, LocalTime.of(14,30),false);
+        Heat heatSecond2025 = kapsejlads4.createHeat(2, LocalTime.of(15,30),false);
+
 
         Hold hold1 = new Hold("Umbilicus","Medical school AU");
         Hold hold2 = new Hold("politologisk forening", "AU (Statskundskab)");
@@ -43,17 +44,18 @@ public class Storage {
         addHold(hold5);
         addHold(hold6);
 
-        Resultat resultat1 = new Resultat(1,207,heatfirst2025);
+        // add results to heats using creatResults and then associat a hold
+        Resultat resultat1 = heatfirst2025.createResultat(1,207);
         resultat1.setHold(hold1);
-        Resultat resultat2 = new Resultat(2,215,heatfirst2025);
+        Resultat resultat2 = heatfirst2025.createResultat(2,215);
         resultat2.setHold(hold2);
-        Resultat resultat3 = new Resultat(3,198,heatfirst2025);
+        Resultat resultat3 = heatfirst2025.createResultat(3,198);
         resultat3.setHold(hold3);
-        Resultat resultat4 = new Resultat(4,228,heatfirst2025);
+        Resultat resultat4 = heatfirst2025.createResultat(4,228);
         resultat4.setHold(hold4);
-        Resultat resultat5 = new Resultat(2,203,heatSecond2025);
+        Resultat resultat5 = heatSecond2025.createResultat(2,203);
         resultat5.setHold(hold5);
-        Resultat resultat6 = new Resultat(4,190,heatSecond2025);
+        Resultat resultat6 = heatSecond2025.createResultat(4,190);
         resultat6.setHold(hold6);
     }
 
@@ -70,6 +72,7 @@ public class Storage {
     public static ArrayList<Hold> getHolds(){
         return holds;
     }
+
 
     public static void addHold(Hold hold) {
         if (!holds.contains(hold)){
