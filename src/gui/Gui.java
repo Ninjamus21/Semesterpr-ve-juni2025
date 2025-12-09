@@ -19,7 +19,7 @@ public class Gui extends Application {
         stage.setTitle("CounterUpDown.Gui tester");
         GridPane pane = new GridPane();
         initContent(pane);
-        Scene scene = new Scene(pane);
+        Scene scene = new Scene(pane, 800,400);
         stage.setScene(scene);
         stage.show();
     }
@@ -63,7 +63,7 @@ public class Gui extends Application {
         opretHeatVbox.getChildren().add(btnOpretHeat);
 
         SectionVBox opretResultat = new SectionVBox("Opret resultat");
-        pane.add(opretResultat, 1, 2);
+        pane.add(opretResultat, 2, 1);
         opretResultat.addNode(comboBoxInstitution);
         opretResultat.addLabeledNode("Bane Nummer", textFieldBaneNummer);
         opretResultat.addLabeledNode("Tid i sekunder", textFieldTidSekunder);
